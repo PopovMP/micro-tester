@@ -46,9 +46,8 @@ const {init, test, done} = require("@popovmp/micro-tester");
 init("My tests");
 
 test("The answer is 42", () =>
-    42 === 42
+    42
 );
-
 
 test("Complex test", () => {
     const expected = 42;
@@ -56,9 +55,15 @@ test("Complex test", () => {
     return expected === actual;
 });
 
-
 done(); 
 ```
+
+Outputs:
+
+My tests
+1. ✅ The answer is 42
+2. ✅ Complex test
+Passed: 2 of 2, Failed: 0
 
 ## Methods
 

@@ -5,7 +5,7 @@ const {init, test, done} = require("../index");
 init("Test the tester");
 
 test("The answer is 42", () =>
-    42 === 42
+    42
 );
 
 
