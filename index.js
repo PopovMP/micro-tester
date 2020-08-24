@@ -33,6 +33,8 @@ function test(message, testFunction) {
         stats.passed++;
     } catch (e) {
         console.error(stats.index + ". ❌ " + message);
+        console.error(e.message);
+        console.error("Actual: " + e.actual + ", Expected: " + e.expected);
         stats.failed++;
     }
 }
