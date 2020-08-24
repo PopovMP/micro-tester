@@ -22,36 +22,45 @@ function init(message) {
  * Performs a test
  *
  * @param {string} message
- * @param {function} testFunction - When return: truthy - test pass, faulty - test fails
+ * @param {function} testFunction - When it finishes successfully - test passes, when throws - test fails
  */
 function test(message, testFunction) {
     stats.index++;
 
     try {
-        const ans = testFunction();
-        if (ans) {
-            console.log(stats.index + ". ✅ " + message);
-            stats.passed++;
-        } else {
-            console.error(stats.index + ". ❌ " + message);
-            stats.failed++;
-        }
+        testFunction();
+        console.log(stats.index + ". ✅ " + message);
+        stats.passed++;
     } catch (e) {
-        console.error(stats.index + ". ❌ " + message + ": " + e.message);
+        console.error(stats.index + ". ❌ " + message);
         stats.failed++;
     }
 }
 
 /**
- * Called at the end of testing.
- * It resets the stats.
- * It throws error on failed tests.
+ * Shows a test summary. It resets the stats.
  */
 function done() {
-    console.log(`Passed: ${stats.passed} of ${stats.index}, Failed: ${stats.failed}`);
+    const message = `Passed: ${stats.passed} of ${stats.index}, Failed: ${stats.failed}`;
     const failed = stats.failed;
 
     resetStats();
+
+    if (failed) {
+        console.error(message);
+    } else {
+        console.log(message);
+    }
+}
+
+/**
+ * Called at the end of the testing set.
+ * It throws error on failed tests.
+ */
+function ensure() {
+    const failed = stats.failed;
+
+    done();
 
     if (failed) {
         throw new Error("Tests failed: " + failed);
@@ -67,5 +76,6 @@ function resetStats() {
 module.exports = {
     init,
     test,
-    done
+    done,
+    ensure,
 }
