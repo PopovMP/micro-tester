@@ -1,21 +1,24 @@
 # A miniature Tester helper for nodejs
 
-**micro-tester** is a very simple, zero dependencies library for logging.
+**micro-tester** is a very simple, zero dependencies helper for unit tests.
 
 Homepage: https://github.com/popovmp/micro-tester
 
 ## Synopsis
 
 ```javascript
-const {init, test, done} = require("@popovmp/micro-tester");
+const assert = require("assert");
+const {init, test, done, ensure} = require("@popovmp/micro-tester");
 
 init("My tests");
 
-test("The answer is 42", () =>
-    42
-);
+test("Math test: 6 * 7 = 42", () => {
+    const actual   = 6 * 7;
+    const expected = 42;
+    assert.strictEqual(actual, expected);
+});
 
-done(); 
+done();
 ```
 
 ## Installation
@@ -26,46 +29,61 @@ npm install @popovmp/micro-tester
 
 ## Usage
 
-**micro-tester** test the truthiness the provided test function.
+**micro-tester** runs a testFunction, collects stats, and prints a summary.
 
 Start the test file with `init("Test set description");`. The `intit` function resets the testing statistics.
-It also prints the the message on the console.
+It also prints the provided message on the console.
 
-Perform test: `test("Test description", (): boolean => {...})`. **micro-tester** tests if the test function returns true or false.
-It also counts the passed and the failed test.
+Perform test: `test("Test description", () => {...})`. **micro-tester** a tests passes when the function completes.
+The test fails when the function throws.
 
-Call `done();` at the end of the test file. It shows a test summary and throws an error if there are failed tests.
+Call `ensure();` at the end of the test file. It shows a test summary and throws an error if there are failed tests.
 
-If you don't want to throw errors, skip the `done` call.
- 
+If you don't want to throw errors, call `done()` at the end of the test set.
+
 
 ```javascript
-// Import the test functions
-const {init, test, done} = require("@popovmp/micro-tester");
+const assert = require("assert");
+const {init, test, done, ensure} = require("@popovmp/micro-tester");
 
 init("My tests");
 
-test("The answer is 42", () =>
-    42
-);
-
-test("Complex test", () => {
-    const expected = 42;
+test("Math test: 6 * 7 = 42", () => {
     const actual   = 6 * 7;
-    return expected === actual;
+    const expected = 42;
+    assert.strictEqual(actual, expected);
 });
 
-done(); 
+ensure(); 
 ```
 
 Outputs:
 
 My tests
 
-1. ✅ The answer is 42
-2. ✅ Complex test
+1. ✅ Math test: 6 * 7 = 42
 
-Passed: 2 of 2, Failed: 0
+Passed: 1 of 1, Failed: 0
+
+
+You may have several testing groups:
+
+```javascript
+init("Testing foo");
+
+test(...);
+test(...);
+
+done();
+
+init("Testing bar");
+
+test(...);
+test(...);
+
+ensure(); // Call `ensure` instead of `done` at the end
+```
+
 
 ## Methods
 
@@ -84,7 +102,7 @@ function init(message)
  * Performs a test
  *
  * @param {string} message
- * @param {function} testFunction - When return: truthy - test pass, faulty - test fails
+ * @param {function} testFunction
  */
 function test(message, testFunction)
 ```
@@ -93,9 +111,17 @@ function test(message, testFunction)
 /**
  * Called at the end of testing.
  * It resets the stats.
- * It throws error on failed tests.
  */
 function done()
+```
+
+```javascript
+/**
+ * Called at the end of testing.
+ * It resets the stats.
+ * It throws error on failed tests.
+ */
+function ensure()
 ```
 
 ## License
