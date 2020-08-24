@@ -27,11 +27,15 @@ test("Math test: 6 * 7 = 42", () => {
     assert.strictEqual(actual, expected);
 });
 
-test("Expected to fail - strictEqual", () => {
+ensure();
+
+init("Tests expected to fail")
+
+test("assert.strictEqual", () => {
     assert.strictEqual(3, 42);
 });
 
-test("Expected to fail - ok", () => {
+test("assert.ok", () => {
     assert.ok(null);
 });
 
