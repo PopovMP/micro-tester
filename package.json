@@ -1,13 +1,13 @@
 {
   "name": "@popovmp/micro-tester",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "A miniature tester for nodejs",
   "main": "index.js",
   "author": "PopovMP <info@forexsb.com>",
   "license": "MIT",
   "homepage": "https://github.com/popovmp/micro-tester",
   "scripts": {
-    "test": "node ./test/index.test.js",
+    "test": "node ./bin/micro-tester.js",
     "prepublishOnly": "npm test"
   },
   "repository": {
@@ -20,5 +20,8 @@
   ],
   "bugs": {
     "url": "https://github.com/popovmp/micro-tester/issues"
+  },
+  "bin": {
+    "micro-tester": "./bin/micro-tester.js"
   }
 }
