@@ -84,6 +84,22 @@ test(...);
 ensure(); // Call `ensure` instead of `done` at the end
 ```
 
+## Run all tests
+
+**micro-tester** exports a `micro-tester` command. It finds and runs all tests in `./test` folder.
+
+The accepted test files format is `test-name.test.js`.
+
+You can set this command in your `package.js`:
+
+```javascript
+{
+  ...
+  "scripts": {
+    "test": "micro-tester"
+  }
+}
+```
 
 ## Methods
 
