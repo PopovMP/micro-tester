@@ -7,15 +7,15 @@ Homepage: https://github.com/popovmp/micro-tester
 ## Synopsis
 
 ```javascript
-const assert = require("assert");
-const {init, test, done, ensure} = require("@popovmp/micro-tester");
+const { strictEqual } = require('assert');
+const {init, test, done, ensure} = require('@popovmp/micro-tester');
 
-init("My tests");
+init('My tests');
 
-test("Math test: 6 * 7 = 42", () => {
+test('6 * 7 = 42', () => {
     const actual   = 6 * 7;
     const expected = 42;
-    assert.strictEqual(actual, expected);
+    strictEqual(actual, expected);
 });
 
 done();
@@ -31,10 +31,10 @@ npm install @popovmp/micro-tester
 
 **micro-tester** runs a testFunction, collects stats, and prints a summary.
 
-Start the test file with `init("Test set description");`. The `intit` function resets the testing statistics.
+Start the test file with `init('Test set description');`. The `intit` function resets the testing statistics.
 It also prints the provided message on the console.
 
-Perform test: `test("Test description", () => {...})`. **micro-tester** a tests passes when the function completes.
+Perform test: `test('Test description', () => {...})`. **micro-tester** a tests passes when the function completes.
 The test fails when the function throws.
 
 Call `ensure();` at the end of the test file. It shows a test summary and throws an error if there are failed tests.
@@ -43,45 +43,44 @@ If you don't want to throw errors, call `done()` at the end of the test set.
 
 
 ```javascript
-const assert = require("assert");
-const {init, test, done, ensure} = require("@popovmp/micro-tester");
+const { strictEqual } = require('assert');
+const {init, test, done, ensure} = require('@popovmp/micro-tester');
 
-init("My tests");
+init('My tests');
 
-test("Math test: 6 * 7 = 42", () => {
+test('6 * 7 = 42', () => {
     const actual   = 6 * 7;
     const expected = 42;
-    assert.strictEqual(actual, expected);
+    strictEqual(actual, expected);
 });
 
 ensure(); 
 ```
 
-Outputs:
+Output - passed test:
 
-My tests
+![Micro Tester - passed test](https://image-holder.forexsb.com/store/micro-tester-success.png)
 
-1. ✅ Math test: 6 * 7 = 42
+Output - failed test:
 
-Passed: 1 of 1, Failed: 0
-
+![Micro Tester - failed test](https://image-holder.forexsb.com/store/micro-tester-failure.png)
 
 You may have several testing groups:
 
 ```javascript
-init("Testing foo");
+init('Testing foo');
 
-test(...);
-test(...);
+test();
+test();
 
 done();
 
-init("Testing bar");
+init('Testing bar');
 
-test(...);
-test(...);
+test();
+test();
 
-ensure(); // Call `ensure` instead of `done` at the end
+ensure(); // Call `ensure` if you want to throw on a failed test
 ```
 
 ## Run all tests
@@ -92,9 +91,8 @@ The accepted test files format is `test-name.test.js`.
 
 You can set this command in your `package.js`:
 
-```javascript
+```json
 {
-  ...
   "scripts": {
     "test": "micro-tester"
   }
@@ -110,17 +108,17 @@ You can set this command in your `package.js`:
  * Resets the stats and shows the message
  * @param {string} message
  */
-function init(message)
+function init(message) { }
 ```
 
 ```javascript
 /**
  * Performs a test
  *
- * @param {string} message
- * @param {function} testFunction
+ * @param { string   } message
+ * @param { function } assertion
  */
-function test(message, testFunction)
+function test(message, assertion) { }
 ```
 
 ```javascript
@@ -128,7 +126,7 @@ function test(message, testFunction)
  * Called at the end of testing.
  * It resets the stats.
  */
-function done()
+function done() { }
 ```
 
 ```javascript
@@ -137,7 +135,7 @@ function done()
  * It resets the stats.
  * It throws error on failed tests.
  */
-function ensure()
+function ensure() { }
 ```
 
 ## License
