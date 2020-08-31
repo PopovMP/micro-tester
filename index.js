@@ -1,40 +1,69 @@
-"use strict";
+'use strict';
+
+const colors = {
+    Reset   : '\x1b[0m',
+    Bright  : '\x1b[1m',
+    FgRed   : '\x1b[31m',
+    FgGreen : '\x1b[32m',
+}
 
 /**
- * Testing stats
- * @type {object}
- * @property {number} index
- * @property {number} passed
- * @property {number} failed
+ * @typedef {object} TestStats
+ *
+ * @property { number } count - total count of the tests
+ * @property { number } passed - count of passed tests
+ * @property { number } failed - count of failed tests
+ * @property { number } start - start time
  */
-const stats = {};
+
+/** @type { TestStats } */
+let stats = {};
 
 /**
- * Resets the stats and shows the message
+ * Gets initial TestStats
+ *
+ * @return { TestStats }
+ */
+function getNewStats() {
+    return {
+        count  : 0,
+        passed : 0,
+        failed : 0,
+        start  : 0,
+    }
+}
+
+/**
+ * Inits testing stats and shows the message
+ *
  * @param {string} message
  */
 function init(message) {
-    console.log(message);
-    resetStats();
+    stats = getNewStats();
+    console.log();
+    console.log(colors.Bright + message + colors.Reset);
+    stats.start = Date.now();
 }
 
 /**
  * Performs a test
  *
  * @param {string} message
- * @param {function} testFunction - When it finishes successfully - test passes, when throws - test fails
+ * @param {function} assertion - When it finishes successfully - test passes, when throws - test fails
  */
-function test(message, testFunction) {
-    stats.index++;
+function test(message, assertion) {
+    stats.count++;
 
     try {
-        testFunction();
-        console.log(stats.index + ". ✅ " + message);
+        assertion();
+
+        logSuccess('✅ ' + message);
         stats.passed++;
     } catch (e) {
-        console.error(stats.index + ". ❌ " + message);
-        console.error(e.message);
-        console.error("Actual: " + e.actual + ", Expected: " + e.expected);
+        logError('❌ ' + message);
+        log(e.message);
+        log('Actual: ' + colors.FgRed + e.actual + colors.Reset + ', ' +
+            'Expected: ' + colors.FgGreen + e.expected + colors.Reset);
         stats.failed++;
     }
 }
@@ -43,16 +72,12 @@ function test(message, testFunction) {
  * Shows a test summary. It resets the stats.
  */
 function done() {
-    const message = `Passed: ${stats.passed} of ${stats.index}, Failed: ${stats.failed}`;
-    const failed = stats.failed;
+    const time    = Date.now() - stats.start;
+    const summary = getStatsSummary(time);
 
-    resetStats();
+    stats = getNewStats();
 
-    if (failed) {
-        console.error(message);
-    } else {
-        console.log(message);
-    }
+    console.log(summary);
 }
 
 /**
@@ -60,19 +85,61 @@ function done() {
  * It throws error on failed tests.
  */
 function ensure() {
-    const failed = stats.failed;
+    const time    = Date.now() - stats.start;
+    const summary = getStatsSummary(time);
+    const failed  = stats.failed;
 
-    done();
+    stats = getNewStats();
+
+    console.log(summary);
 
     if (failed) {
-        throw new Error("Tests failed: " + failed);
+        throw new Error('Tests failed: ' + failed);
     }
 }
 
-function resetStats() {
-    stats.index  = 0;
-    stats.passed = 0;
-    stats.failed = 0;
+/**
+ * Composes the test summary message
+ *
+ * @param { number } time - the total test time
+ */
+function getStatsSummary(time) {
+    const passedText = stats.passed === stats.count
+        ? colors.FgGreen + 'Passed: ' + stats.passed + ' of ' + stats.count + colors.Reset
+        : 'Passed: ' + stats.passed + ' of ' + stats.count;
+
+    const failedText = stats.failed
+        ? colors.FgRed + 'Failed: ' + stats.failed + colors.Reset
+        : 'Failed: ' + stats.failed;
+
+    return passedText + ', ' + failedText + ' (' + time + ' ms)';
+}
+
+/**
+ * Logs with indentation
+ *
+ * @param { string } message - success message
+ */
+function log(message) {
+    console.log('    ' + message);
+}
+
+/**
+ * Logs a successful test
+ *
+ * @param { string } message - success message
+ */
+function logSuccess(message) {
+    console.log('    ' + colors.FgGreen + message + colors.Reset);
+}
+
+/**
+ * Logs a failed test
+ *
+ * @param { string } message - error message
+ */
+function logError(message) {
+    console.log('    ' + colors.FgRed + message + colors.Reset);
 }
 
 module.exports = {
